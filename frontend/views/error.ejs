@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка - Wine Quality Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="bg-dark text-white py-3 mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-wine-bottle fa-2x text-warning"></i>
+                    </div>
+                    <div class="col">
+                        <h1 class="mb-0">🍷 Wine Quality Prediction</h1>
+                        <p class="mb-0 text-muted">Предсказание качества вина на основе химических характеристик</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-4x text-danger mb-4"></i>
+                            <h2 class="text-danger mb-3">Произошла ошибка</h2>
+                            
+                            <% if (error) { %>
+                                <div class="alert alert-danger">
+                                    <%= error %>
+                                </div>
+                            <% } else { %>
+                                <p class="lead text-muted">К сожалению, что-то пошло не так при обработке вашего запроса.</p>
+                            <% } %>
+
+                            <div class="mt-4">
+                                <a href="/" class="btn btn-primary">
+                                    <i class="fas fa-home"></i> Вернуться на главную
+                                </a>
+                                <button onclick="history.back()" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left"></i> Назад
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Troubleshooting -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5><i class="fas fa-wrench"></i> Возможные решения</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    Проверьте правильность введенных данных
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    Убедитесь, что все поля заполнены корректно
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    Попробуйте обновить страницу
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    Проверьте подключение к интернету
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">
+                🍷 Wine Quality Prediction ML Project | 
+                <a href="https://github.com/your-username/wine-quality-ml" class="text-warning">GitHub</a> | 
+                <a href="/api" class="text-warning">API</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

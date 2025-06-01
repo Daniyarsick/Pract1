@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="bg-dark text-white py-3 mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-wine-bottle fa-2x text-warning"></i>
+                    </div>
+                    <div class="col">
+                        <h1 class="mb-0">🍷 Wine Quality Prediction</h1>
+                        <p class="mb-0 text-muted">Предсказание качества вина на основе химических характеристик</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row">
+                <!-- Input Form -->
+                <div class="col-lg-6">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-flask"></i> Характеристики вина</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/predict" method="POST" id="wineForm">
+                                <!-- Wine Type -->
+                                <div class="mb-3">
+                                    <label for="wine_type_red" class="form-label">Тип вина</label>
+                                    <select class="form-select" name="wine_type_red" required>
+                                        <option value="">Выберите тип вина</option>
+                                        <option value="1">🍷 Красное вино</option>
+                                        <option value="0">🥂 Белое вино</option>
+                                    </select>
+                                </div>
+
+                                <!-- Chemical Properties -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fixed_acidity" class="form-label">Фиксированная кислотность</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.1" class="form-control" name="fixed_acidity" 
+                                                   placeholder="4.6-15.9" min="4" max="16" required>
+                                            <span class="input-group-text">г/л</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="volatile_acidity" class="form-label">Летучая кислотность</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.01" class="form-control" name="volatile_acidity" 
+                                                   placeholder="0.12-1.58" min="0.1" max="2" required>
+                                            <span class="input-group-text">г/л</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="citric_acid" class="form-label">Лимонная кислота</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.01" class="form-control" name="citric_acid" 
+                                                   placeholder="0.0-1.0" min="0" max="1" required>
+                                            <span class="input-group-text">г/л</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="residual_sugar" class="form-label">Остаточный сахар</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.1" class="form-control" name="residual_sugar" 
+                                                   placeholder="0.9-15.5" min="0.5" max="20" required>
+                                            <span class="input-group-text">г/л</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="chlorides" class="form-label">Хлориды</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.001" class="form-control" name="chlorides" 
+                                                   placeholder="0.012-0.611" min="0.01" max="1" required>
+                                            <span class="input-group-text">г/л</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="free_sulfur_dioxide" class="form-label">Свободный SO₂</label>
+                                        <div class="input-group">
+                                            <input type="number" step="1" class="form-control" name="free_sulfur_dioxide" 
+                                                   placeholder="1-72" min="1" max="80" required>
+                                            <span class="input-group-text">мг/л</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="total_sulfur_dioxide" class="form-label">Общий SO₂</label>
+                                        <div class="input-group">
+                                            <input type="number" step="1" class="form-control" name="total_sulfur_dioxide" 
+                                                   placeholder="6-289" min="5" max="300" required>
+                                            <span class="input-group-text">мг/л</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="density" class="form-label">Плотность</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.0001" class="form-control" name="density" 
+                                                   placeholder="0.99-1.00" min="0.99" max="1.01" required>
+                                            <span class="input-group-text">г/мл</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pH" class="form-label">pH</label>
+                                        <input type="number" step="0.01" class="form-control" name="pH" 
+                                               placeholder="2.74-4.01" min="2.5" max="4.5" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sulphates" class="form-label">Сульфаты</label>
+                                        <div class="input-group">
+                                            <input type="number" step="0.01" class="form-control" name="sulphates" 
+                                                   placeholder="0.33-2.0" min="0.3" max="2.5" required>
+                                            <span class="input-group-text">г/л</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="alcohol" class="form-label">Содержание алкоголя</label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.1" class="form-control" name="alcohol" 
+                                               placeholder="8.4-14.9" min="8" max="16" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-magic"></i> Предсказать качество
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="col-lg-6">
+                    <% if (result) { %>
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-line"></i> Результат предсказания</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <div class="display-1 text-primary fw-bold">
+                                    <%= result.prediction %>
+                                </div>
+                                <div class="h4 text-muted">баллов из 10</div>
+                                <div class="progress mb-3" style="height: 20px;">
+                                    <div class="progress-bar bg-<%= result.prediction >= 7 ? 'success' : result.prediction >= 5 ? 'warning' : 'danger' %>" 
+                                         style="width: <%= (result.prediction / 10) * 100 %>%">
+                                        <%= Math.round((result.prediction / 10) * 100) %>%
+                                    </div>
+                                </div>
+                            </div>
+
+                            <% if (result.probabilities) { %>
+                            <h6>Вероятности по классам:</h6>
+                            <% Object.keys(result.probabilities).forEach(function(quality) { %>
+                                <% if (result.probabilities[quality] > 0.01) { %>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Качество <%= quality %>:</span>
+                                    <span class="badge bg-secondary">
+                                        <%= Math.round(result.probabilities[quality] * 100) %>%
+                                    </span>
+                                </div>
+                                <% } %>
+                            <% }) %>
+                            <% } %>
+
+                            <% if (result.confidence) { %>
+                            <div class="mt-3 p-3 bg-light rounded">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Уверенность модели: <%= Math.round(result.confidence * 100) %>%
+                                </small>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } else if (error) { %>
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Ошибка</h5>
+                        <p><%= error %></p>
+                    </div>
+                    <% } else { %>
+                    <div class="card shadow">
+                        <div class="card-body text-center text-muted">
+                            <i class="fas fa-arrow-left fa-3x mb-3"></i>
+                            <h5>Заполните форму</h5>
+                            <p>Введите характеристики вина для получения предсказания качества</p>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Best and Worst Wines Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-trophy"></i> Лучшие и худшие вина</h5>
+                            <button class="btn btn-light btn-sm" onclick="loadBestWorstWines()">
+                                <i class="fas fa-sync-alt"></i> Обновить
+                            </button>
+                        </div>
+                        <div class="card-body" id="bestWorstWinesContent">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
+                                <p class="mt-2">Загрузка данных о винах...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-info-circle"></i> О модели</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>Алгоритм:</h6>
+                                    <p>XGBoost Classifier</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Точность:</h6>
+                                    <p>67.2% на тестовой выборке</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Датасет:</h6>
+                                    <p>6497 образцов португальских вин</p>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">
+                                Модель обучена на данных о красных и белых винах региона "Винью Верде" 
+                                и может предсказывать качество от 3 до 9 баллов.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">
+                🍷 Wine Quality Prediction ML Project | 
+                <a href="https://github.com/your-username/wine-quality-ml" class="text-warning">GitHub</a> | 
+                <a href="/api" class="text-warning">API</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

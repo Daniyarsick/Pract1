@@ -17,15 +17,41 @@ logger = logging.getLogger(__name__)
 # Загрузка модели и скейлера
 MODEL_PATH = 'models/best_wine_model.pkl'
 SCALER_PATH = 'models/scaler.pkl'
+DATA_PATH_RED = 'data/winequality-red.csv'
+DATA_PATH_WHITE = 'data/winequality-white.csv'
 
 try:
     model = joblib.load(MODEL_PATH)
     scaler = joblib.load(SCALER_PATH)
-    logger.info("Модель и скейлер успешно загружены")
+    
+    # Загрузка данных о винах
+    red_wines = pd.read_csv(DATA_PATH_RED, sep=';')
+    white_wines = pd.read_csv(DATA_PATH_WHITE, sep=';')
+    
+    # Добавляем тип вина
+    red_wines['wine_type_red'] = 1
+    white_wines['wine_type_red'] = 0
+    
+    # Объединяем данные
+    all_wines = pd.concat([red_wines, white_wines], ignore_index=True)
+    
+    # Переименовываем колонки для соответствия модели
+    column_mapping = {
+        'fixed acidity': 'fixed_acidity',
+        'volatile acidity': 'volatile_acidity',
+        'citric acid': 'citric_acid',
+        'residual sugar': 'residual_sugar',
+        'free sulfur dioxide': 'free_sulfur_dioxide',
+        'total sulfur dioxide': 'total_sulfur_dioxide'
+    }
+    all_wines = all_wines.rename(columns=column_mapping)
+    
+    logger.info("Модель, скейлер и данные о винах успешно загружены")
 except Exception as e:
-    logger.error(f"Ошибка загрузки модели: {e}")
+    logger.error(f"Ошибка загрузки модели или данных: {e}")
     model = None
     scaler = None
+    all_wines = None
 
 # Список признаков модели
 FEATURE_NAMES = [
@@ -176,5 +202,57 @@ def get_features():
         }
     })
 
+@app.route('/api/best-worst-wines', methods=['GET'])
+def get_best_worst_wines():
+    """Получение лучшего и худшего вина из датасета"""
+    try:
+        if all_wines is None:
+            return jsonify({'error': 'Данные о винах не загружены'}), 500
+        
+        # Находим лучшее и худшее вино по качеству
+        best_wine = all_wines.loc[all_wines['quality'].idxmax()]
+        worst_wine = all_wines.loc[all_wines['quality'].idxmin()]
+        
+        def wine_to_dict(wine_series):
+            wine_dict = wine_series.to_dict()
+            return {
+                'quality': int(wine_dict['quality']),
+                'wine_type': 'Красное' if wine_dict['wine_type_red'] == 1 else 'Белое',
+                'characteristics': {
+                    'fixed_acidity': float(wine_dict['fixed_acidity']),
+                    'volatile_acidity': float(wine_dict['volatile_acidity']),
+                    'citric_acid': float(wine_dict['citric_acid']),
+                    'residual_sugar': float(wine_dict['residual_sugar']),
+                    'chlorides': float(wine_dict['chlorides']),
+                    'free_sulfur_dioxide': float(wine_dict['free_sulfur_dioxide']),
+                    'total_sulfur_dioxide': float(wine_dict['total_sulfur_dioxide']),
+                    'density': float(wine_dict['density']),
+                    'pH': float(wine_dict['pH']),
+                    'sulphates': float(wine_dict['sulphates']),
+                    'alcohol': float(wine_dict['alcohol'])
+                }
+            }
+        
+        # Также найдем статистику
+        quality_stats = {
+            'min_quality': int(all_wines['quality'].min()),
+            'max_quality': int(all_wines['quality'].max()),
+            'avg_quality': float(all_wines['quality'].mean()),
+            'total_wines': len(all_wines),
+            'red_wines': len(all_wines[all_wines['wine_type_red'] == 1]),
+            'white_wines': len(all_wines[all_wines['wine_type_red'] == 0])
+        }
+        
+        return jsonify({
+            'best_wine': wine_to_dict(best_wine),
+            'worst_wine': wine_to_dict(worst_wine),
+            'statistics': quality_stats,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Ошибка при получении лучшего/худшего вина: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

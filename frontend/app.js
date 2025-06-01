@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Конфигурация API
-const API_BASE_URL = process.env.API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.API_URL || 'http://localhost:5001';
 
 // Главная страница
 app.get('/', (req, res) => {
@@ -121,6 +121,24 @@ app.get('/health', async (req, res) => {
             api_status: 'unavailable',
             error: error.message,
             timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// Прокси для API лучшего и худшего вина
+app.get('/api/best-worst-wines', async (req, res) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/best-worst-wines`, {
+            timeout: 10000
+        });
+        
+        res.json(response.data);
+        
+    } catch (error) {
+        console.error('Ошибка при получении данных о лучшем/худшем вине:', error);
+        res.status(500).json({
+            error: 'Не удалось получить данные о винах',
+            details: error.message
         });
     }
 });

@@ -55,8 +55,8 @@ def load_and_prepare_data():
         print("и поместите файлы winequality-red.csv и winequality-white.csv в папку data/")
         sys.exit(1)
     
-    red_wine = pd.read_csv(red_wine_path)
-    white_wine = pd.read_csv(white_wine_path)
+    red_wine = pd.read_csv(red_wine_path, sep=';')
+    white_wine = pd.read_csv(white_wine_path, sep=';')
     
     # Добавляем тип вина
     red_wine['wine_type'] = 'red'
@@ -264,9 +264,30 @@ def save_model_and_artifacts(model, scaler, metadata, model_name):
     joblib.dump(model, models_dir / "best_wine_model.pkl")
     joblib.dump(scaler, models_dir / "scaler.pkl")
     
+    # Преобразуем метаданные в JSON-сериализуемый формат
+    def convert_to_serializable(obj):
+        """Преобразует объекты NumPy в стандартные типы Python"""
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {key: convert_to_serializable(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [convert_to_serializable(item) for item in obj]
+        elif isinstance(obj, tuple):
+            return tuple(convert_to_serializable(item) for item in obj)
+        else:
+            return obj
+    
+    # Применяем преобразование к метаданным
+    serializable_metadata = convert_to_serializable(metadata)
+    
     # Сохраняем метаданные
     with open(models_dir / "model_metadata.json", 'w') as f:
-        json.dump(metadata, f, indent=2)
+        json.dump(serializable_metadata, f, indent=2)
     
     print(f"Модель сохранена в {models_dir / 'best_wine_model.pkl'}")
     print(f"Скейлер сохранен в {models_dir / 'scaler.pkl'}")
@@ -313,11 +334,11 @@ def main():
         'roc_auc': float(roc_auc),
         'validation_accuracy': float(all_results[best_model_name]['val_accuracy']),
         'feature_names': list(X_train.columns),
-        'classes': list(sorted(wine_data['quality'].unique())),
-        'training_size': len(X_train),
-        'features_count': len(X_train.columns),
+        'classes': [int(cls) for cls in sorted(wine_data['quality'].unique())],
+        'training_size': int(len(X_train)),
+        'features_count': int(len(X_train.columns)),
         'training_date': datetime.now().isoformat(),
-        'data_shape': wine_data.shape
+        'data_shape': [int(wine_data.shape[0]), int(wine_data.shape[1])]
     }
     
     # Важность признаков (если доступна)

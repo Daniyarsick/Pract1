@@ -1,0 +1,50 @@
+{
+  "model_type": "RandomForest",
+  "test_accuracy": 0.6605128205128206,
+  "roc_auc": 0.8386593535811054,
+  "validation_accuracy": 0.7088477366255144,
+  "feature_names": [
+    "fixed acidity",
+    "volatile acidity",
+    "citric acid",
+    "residual sugar",
+    "chlorides",
+    "free sulfur dioxide",
+    "total sulfur dioxide",
+    "density",
+    "pH",
+    "sulphates",
+    "alcohol",
+    "wine_type_red"
+  ],
+  "classes": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "training_size": 4550,
+  "features_count": 12,
+  "training_date": "2025-06-02T00:05:00.223020",
+  "data_shape": [
+    6497,
+    13
+  ],
+  "feature_importance": {
+    "fixed acidity": 0.07185221557608105,
+    "volatile acidity": 0.1023240351925611,
+    "citric acid": 0.0794962180115658,
+    "residual sugar": 0.08207983322981219,
+    "chlorides": 0.08658275767529311,
+    "free sulfur dioxide": 0.08372578903133712,
+    "total sulfur dioxide": 0.08982443797992559,
+    "density": 0.1018889918717279,
+    "pH": 0.0825960299250187,
+    "sulphates": 0.08514558790828326,
+    "alcohol": 0.13021248260715407,
+    "wine_type_red": 0.004271620991240122
+  }
+}
