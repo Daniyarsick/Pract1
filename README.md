@@ -17,6 +17,9 @@
 - **GitHub Repository**: [https://github.com/your-username/wine-quality-ml](https://github.com/your-username/wine-quality-ml)
 - **Техническая документация**: [docs/README.md](docs/README.md)
 
+
+![Альтернативный текст](image-1.png)
+
 ## Оглавление
 
 1. [Описание проекта](#описание-проекта)
